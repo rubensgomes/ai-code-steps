@@ -32,7 +32,7 @@ developerId=@USER_ID@
 developerName=@DEVELOPER_NAME@
 developerEmail=@EMAIL@
 
-scmConnection=scm:git:https://github.com/@USER_ID@/@PROJECT_NAME@.com.git
+scmConnection=scm:git:https://github.com/@USER_ID@/@PROJECT_NAME@.git
 scmUrl=https://github.com/@USER_ID@/@PROJECT_NAME@.git
 
 ###############################################################################

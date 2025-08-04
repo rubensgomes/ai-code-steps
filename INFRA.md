@@ -5,18 +5,20 @@ the new project to be developed using [Claude Code](https://www.anthropic.com/cl
 
 ## Steps to set up Gradle build infrastructure
 
-1. Copy the following files included in this folder to new project
+- Copy the following files included in this folder to new project
 
     - .gitignore
     - .gitattributes
     - build.gradle.kts.template
 
-2. Replaces tokens and copies below files to the new project
+- Replaces tokens and copies below files to the new project
 
     - settings.gradle.kts.template
     - gradle.properties.template
 
-3. Switch to the new project directory
+- Switch to the new project directory
+
+- The following script does all the above steps automatically:
 
     ```shell
     # time to wait to allow user to read the error message
@@ -35,7 +37,7 @@ the new project to be developed using [Claude Code](https://www.anthropic.com/cl
       sleep "${TIMEOUT}"; exit 1
     }
 
-    ${PROJ_ROOT}/infra.sh || {   
+    "${PROJ_ROOT}/infra.sh" || {   
       printf "Failed to run infra.sh.\n" >&2
       sleep "${TIMEOUT}"; exit 1
     }
