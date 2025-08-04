@@ -5,11 +5,10 @@ the assistance of [Claude Code](https://www.anthropic.com/claude-code).
 
 ## Steps to scaffold a new Gradle project
 
-1. Edit the `env.sh` and configure the environment variables appropriately. The
-   `env.sh` file is used to set up the environment variables needed for the
-   `ai-code-steps` project. It should be sourced before running below commands.
-
-2. Run gradle init to scaffold a new Gradle project.
+- Edit the `env.sh` and configure the environment variables appropriately. The
+  `env.sh` file is used to set up the environment variables needed for the
+  `ai-code-steps` project. It should be sourced before running below commands.
+- Run gradle init to scaffold a new Gradle project.
 
     ```shell
     # time to wait to allow user to read the error message
