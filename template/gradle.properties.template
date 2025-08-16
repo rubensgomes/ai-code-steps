@@ -21,6 +21,7 @@
 # This file is used to define properties for the Gradle build system.
 group=com.rubensgomes
 artifact=@PROJECT_NAME@
+# mainClass only used for "app" project. leave it blank for "lib" projects
 mainClass=@MAIN_CLASS@
 
 # version must end in SNAPSHOT for release plugin to work due to bug reported at:
