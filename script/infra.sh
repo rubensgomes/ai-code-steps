@@ -36,9 +36,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
 ## GLOBAL CONSTANTS ############################################################
 
 # the file(s) to modify
-declare -ra TEMPLATED_FILES=(
+declare -ra MODIFIED_TEMPLATE_FILES=(
   "template/gradle.properties.template"
   "template/settings.gradle.kts.template"
+  "template/README.md.template"
 )
 
 ################################################################################
@@ -66,12 +67,12 @@ infra::init() {
 
 
 ################################################################################
-## Parses files defined in TEMPLATED_FILES and replaces the tokens with token
+## Parses files defined in MODIFIED_TEMPLATE_FILES and replaces the tokens with token
 ## values defined in ENV_MAP from env.sh.
 ##
 ## Globals:
 ##   ENV_MAP         : associative array defined in env.sh
-##   TEMPLATED_FILES : array of files to modify
+##   MODIFIED_TEMPLATE_FILES : array of files to modify
 ## Arguments:
 ##   none
 ## Returns:
@@ -82,7 +83,7 @@ infra::replace_tokens() {
   local file replacement_value temp_file token
 
   # Loop through each file
-  for file in "${TEMPLATED_FILES[@]}"; do
+  for file in "${MODIFIED_TEMPLATE_FILES[@]}"; do
     # Create a temporary file for modifications
     temp_file=$(mktemp)
 
@@ -127,19 +128,20 @@ infra::replace_tokens() {
 ##   0 if okay; something else if fails.
 ################################################################################
 infra::copy_files() {
+  local new_proj_folder="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
 
-  cp -f .gitignore "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/.gitignore" || {
-    printf "Failed to copy .gitignore to ${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/.gitignore\n" >&2
+  cp -f .gitignore "${new_proj_folder}/.gitignore" || {
+    printf "Failed to copy .gitignore to ${new_proj_folder}/.gitignore\n" >&2
     return 1
   }
 
-  cp -f .gitattributes "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/.gitattributes" || {
-    printf "Failed to copy .gitattributes to ${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/.gitattributes\n" >&2
+  cp -f .gitattributes "${new_proj_folder}/.gitattributes" || {
+    printf "Failed to copy .gitattributes to ${new_proj_folder}/.gitattributes\n" >&2
     return 1
   }
 
-  cp -f build.gradle.kts.template "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/${ENV_MAP[PROJECT_TYPE]}/build.gradle.kts" || {
-    printf "Failed to copy build.gradle.kts.template to ${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/${ENV_MAP[PROJECT_TYPE]}/build.gradle.kts\n" >&2
+  cp -f template/build.gradle.kts.template "${new_proj_folder}/build.gradle.kts" || {
+    printf "Failed to copy build.gradle.kts.template to ${new_proj_folder}/build.gradle.kts\n" >&2
     return 1
   }
 
@@ -158,19 +160,23 @@ infra::copy_files() {
 ##   0 if okay; something else if fails.
 ################################################################################
 infra::mv_files() {
+  local new_proj_folder="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  local file new_file
 
-  # Move updated template gradle.properties.template to the new project directory
-  mv -f gradle.properties.template.NEW "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/gradle.properties" || {
-    printf "Failed to copy gradle.properties.template to ${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/${ENV_MAP[PROJECT_TYPE]}/gradle.properties\n" >&2
-    return 1
-  }
+  printf "changing to template folder.\n"
+  pushd "template"
 
-  # Move updated template settings.gradle.kts.template to the new project directory
-  mv -f settings.gradle.kts.template.NEW "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/settings.gradle.kts" || {
-    printf "Failed to copy settings.gradle.kts.template to ${HOME}/dev/${ENV_MAP[PROJECT_NAME]}/settings.gradle.kts\n" >&2
-    return 1
-  }
+  for new_file in *.NEW; do
+    file="${new_file/%.template.NEW/}"
+    printf "copying [%s] to [%s].\n" "${new_file}" "${new_proj_folder}/${file}"
+    mv "${new_file}" "${new_proj_folder}/${file}" || {
+      printf "Failed to copy [%s] to [%s]\n" "${new_file}" "${new_proj_folder}/${file}" >&2
+      popd
+      return 1
+    }
+  done
 
+  popd
   return 0
 }
 
@@ -218,31 +224,43 @@ infra::rm_toml() {
 ################################################################################
 main() {
 
-  # Initialize the environment
+  local proj_root=
+  if ! proj_root="$(git rev-parse --show-toplevel)"; then
+    printf "failed to determinie git project new_proj_folder.\n" >&2
+    return 1
+  fi
+
+  printf "changing to: %s\n" "${proj_root}"
+  cd "${proj_root}" || {
+    printf "failed to change to %s\n" "${proj_root}"
+    return 1
+  }
+
+  printf "initialize the environment\n"
   infra::init || {
     printf "Failed to initialize the environment.\n" >&2
     return 1
   }
 
-  # Replace tokens in the files
+  printf "replace tokens in the template files\n"
   infra::replace_tokens || {
     printf "Failed to replace tokens in the files.\n" >&2
     return 1
   }
 
-  # Copy the non-updated template files to the new project directory
+  printf "copy non-updated template files to the new project directory\n"
   infra::copy_files || {
     printf "Failed to copy files to the new project directory.\n" >&2
     return 1
   }
 
-  # Move the modified template files to the new project directory
+  printf "copy the modified template files to the new project directory\n"
   infra::mv_files || {
     printf "Failed to move files to the new project directory.\n" >&2
     return 1
   }
 
-  # remove the new project's local version catalog toml file
+  printf "remove the new project's local version catalog toml file\n"
   infra::rm_toml || {
     printf "Failed to remove the new project local version catalog toml file.\n" >&2
     return 1

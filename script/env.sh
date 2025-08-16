@@ -34,6 +34,7 @@ declare -rxA ENV_MAP=(
   [MAIN_CLASS]=""
   [PACKAGE]="com.rubensgomes.mslib"
   [PROJECT_NAME]="ms-lib"
+  [PROJECT_DESCRIPTION]="This is a common library project for microservices"
   [PROJECT_TITLE]="Microservice Library"
   # PROJECT_TYPE can be "app" or "lib"
   [PROJECT_TYPE]="lib"
