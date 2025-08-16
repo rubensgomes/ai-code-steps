@@ -16,25 +16,27 @@
 
 # File: env.sh
 #
-# Description: This file defines a key-value pair environment variable map
-# containing properties to be replaced in the template files included in
-# this project.
+# Description: This file defines a map of key-value pairs containing
+# properties to be used while scaffolding the new Java coding project
 #
 # Pre-requisites: Bash 4.2 or later due to the use of associative arrays.
 #
 # Author: Rubens Gomes
 
 # TODO: Change the associative array values below to match your project configuration.
-# Associative array requires Bash 4.2 or later.
+
 declare -rxA ENV_MAP=(
   [DEVELOPER_NAME]="Rubens Gomes"
   [EMAIL]="rubens.s.gomes@gmail.com"
-  [MAIN_CLASS]="com.rubensgomes.userms.App"
-  [PACKAGE]="com.rubensgomes.userms"
-  [PROJECT_NAME]="user-ms"
-  [PROJECT_TITLE]="User Account Management Microservice"
+  # Gradle build project type: java-application or java-library
+  [GRADLE_TYPE]="java-library"
+  # only needed if you are building an ap (e.g., com.rubensgomes.userms.App)
+  [MAIN_CLASS]=""
+  [PACKAGE]="com.rubensgomes.mslib"
+  [PROJECT_NAME]="ms-lib"
+  [PROJECT_TITLE]="Microservice Library"
   # PROJECT_TYPE can be "app" or "lib"
-  [PROJECT_TYPE]="app"
+  [PROJECT_TYPE]="lib"
   [USER_ID]="rubensgomes"
 )
 

@@ -14,25 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the__LICENSE] [1].
 
-# File: env.sh
+# File: infra.sh
 #
-# Description: This file replaces tokens (e.g., @PROJECT_NAME@) found
-# in the templated files and copies them to the new project.
+# Description: This file replaces tokens (e.g., @PROJECT_NAME@) found in the
+# templated files (gradle.properties.template, settings.gradle.kts.template)
+# and copies them to the new project.
 #
 # Pre-requisites: Bash 4.2 or later due to the use of associative arrays.
 #
 # Author: Rubens Gomes
 
+###############################################################################
+## INCLUDES ###################################################################
+
+# -------------------- >>> Import env.sh <<< ----------------------------------
+
+# shellcheck source=script/env.sh
+source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
+
 ################################################################################
 ## GLOBAL CONSTANTS ############################################################
 
-# time to wait to allow user to read any error message
-readonly TIMEOUT=10
-
 # the file(s) to modify
-declare -ra FILES_TO_MODIFY=(
-  "gradle.properties.template"
-  "settings.gradle.kts.template"
+declare -ra TEMPLATED_FILES=(
+  "template/gradle.properties.template"
+  "template/settings.gradle.kts.template"
 )
 
 ################################################################################
@@ -60,13 +66,12 @@ infra::init() {
 
 
 ################################################################################
-## Parses files defined in FILES_TO_MODIFY and replaces the tokens with token
+## Parses files defined in TEMPLATED_FILES and replaces the tokens with token
 ## values defined in ENV_MAP from env.sh.
 ##
 ## Globals:
 ##   ENV_MAP         : associative array defined in env.sh
-##   FILES_TO_MODIFY : array of files to modify
-##   TIMEOUT         : timeout in seconds to wait for user to read error messages
+##   TEMPLATED_FILES : array of files to modify
 ## Arguments:
 ##   none
 ## Returns:
@@ -77,7 +82,7 @@ infra::replace_tokens() {
   local file replacement_value temp_file token
 
   # Loop through each file
-  for file in "${FILES_TO_MODIFY[@]}"; do
+  for file in "${TEMPLATED_FILES[@]}"; do
     # Create a temporary file for modifications
     temp_file=$(mktemp)
 
@@ -212,13 +217,6 @@ infra::rm_toml() {
 ##   0 if okay; something else if fails.
 ################################################################################
 main() {
-
-  # env.sh should be configured before running this script.
-  # env.sh exports ENV_MAP associative array
-  source "env.sh" || {
-    printf "Failed to source env.sh.\n" >&2
-    sleep "${TIMEOUT}"; exit 1
-  }
 
   # Initialize the environment
   infra::init || {
