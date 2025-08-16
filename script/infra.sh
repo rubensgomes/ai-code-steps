@@ -162,16 +162,22 @@ infra::copy_files() {
 ##   0 if okay; something else if fails.
 ################################################################################
 infra::mv_files() {
-  local file new_file
+  local file folder new_file
 
   printf "changing to template folder.\n"
   pushd "template"
 
   for new_file in *.NEW; do
     file="${new_file/%.template.NEW/}"
-    printf "moving [%s] to [%s].\n" "${new_file}" "${NEW_PROJ_FOLDER}/${file}"
-    mv "${new_file}" "${NEW_PROJ_FOLDER}/${file}" || {
-      printf "Failed to move [%s] to [%s]\n" "${new_file}" "${NEW_PROJ_FOLDER}/${file}" >&2
+    folder="${NEW_PROJ_FOLDER}"
+
+    if [[ "${file}" =~ gradle.properties ]]; then
+      folder="${NEW_PROJ_FOLDER}/${ENV_MAP[PROJECT_TYPE]}"
+    fi
+
+    printf "moving [%s] to [%s].\n" "${new_file}" "${folder}/${file}"
+    mv "${new_file}" "${folder}/${file}" || {
+      printf "Failed to move [%s] to [%s]\n" "${new_file}" "${folder}/${file}" >&2
       popd
       return 1
     }
