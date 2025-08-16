@@ -31,10 +31,39 @@
 source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
 
 ################################################################################
+## GLOBAL CONSTANTS ############################################################
+
+# ENV_MAP[PROJECT_NAME] is defined in the script/env.sh.
+readonly NEW_PROJ_FOLDER="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+
+################################################################################
+## Configures shell options, unset aliases and other initialization.
+##
+## Globals:
+##   None.
+## Arguments:
+##   None.
+## Returns:
+##   0 always.
+################################################################################
+import::init() {
+
+  # ensure no aliases are used during the execution of script
+  \unalias -a
+
+  set -o errexit  # abort on nonzero exitstatus
+  set -o nounset  # abort on unbound variable
+  set -o pipefail # don't hide errors within pipes
+
+  return 0
+}
+
+################################################################################
 ## The main function.
 ##
 ## Globals:
-##   none.
+##   ENV_MAP
+##   NEW_PROJ_FOLDER
 ## Arguments:
 ##   none
 ## Returns:
@@ -42,31 +71,40 @@ source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
 ################################################################################
 main() {
 
-  # switch to the newly created project directory
-  printf "switch to folder: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  printf "initialize the environment\n"
+  import::init || {
+    printf "Failed to initialize the environment.\n" >&2
+    return 1
+  }
 
-  cd "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" || {
-      printf "Failed to change directory to %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+
+  # switch to the newly created project directory
+  printf "switch to folder: %s\n\n" "${NEW_PROJ_FOLDER}"
+
+  pushd "${NEW_PROJ_FOLDER}" || {
+      printf "Failed to change directory to %s\n" "${NEW_PROJ_FOLDER}" >&2
       return 1
    }
 
   # creates a new local Git repository
-  printf "create local Git main branch from folder at: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  printf "create local Git main branch from folder at: %s\n\n" "${NEW_PROJ_FOLDER}"
 
   git init -b main || {
-      printf "Failed to Git init directory %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+      printf "Failed to Git init directory %s\n" "${NEW_PROJ_FOLDER}" >&2
+      popd
       return 1
   }
 
   # adds files from new local Git repository
-  printf "add files to local Git folder at: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  printf "add files to local Git folder at: %s\n\n" "${NEW_PROJ_FOLDER}"
 
   git add . || {
-      printf "Failed to Git add directory %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+      printf "Failed to Git add directory %s\n" "${NEW_PROJ_FOLDER}" >&2
+      popd
       return 1
   }
 
-  printf "git commit files at: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  printf "git commit files at: %s\n\n" "${NEW_PROJ_FOLDER}"
 
   git commit -m "initial commit" -a || {
       printf "WARNING: failed to commit files to local git repository.\n" >&2
@@ -81,6 +119,7 @@ main() {
     printf "create remote GitHub repository from: %s\n" "${remote_repo}"
     gh repo create --homepage "https://github.com/${ENV_MAP[USER_ID]}" --public "${ENV_MAP[PROJECT_NAME]}" || {
         printf "WARNING: Failed to create GitHub repository.\n" >&2
+        popd
         return 1
     }
   fi
@@ -95,6 +134,7 @@ main() {
     printf "Adding remote origin to GitHub repository.\n\n"
     git remote add origin "${remote_repo}" || {
         printf "WARNING: Failed to add remote origin.\n" >&2
+        popd
         return 1
     }
   fi
@@ -102,6 +142,7 @@ main() {
   printf "pushing local main branch changes to GitHub repository.\n\n"
   git push -u origin main || {
       printf "Failed to push to remote repository.\n" >&2
+      popd
       return 1
   }
 
@@ -112,15 +153,19 @@ main() {
     printf "creating a release branch off of main.\n\n"
     git checkout -b release main || {
         printf "Failed to create release branch.\n" >&2
+        popd
         return 1
     }
     printf "pushing local release branch changes to GitHub repository.\n\n"
     git push -u origin release || {
         printf "Failed to push to remote repository.\n" >&2
+        popd
         return 1
     }
 
   fi
+
+  popd
 }
 
 ################################################################################

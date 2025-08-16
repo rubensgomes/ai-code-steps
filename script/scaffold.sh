@@ -33,10 +33,39 @@
 source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
 
 ################################################################################
+## GLOBAL CONSTANTS ############################################################
+
+# ENV_MAP[PROJECT_NAME] is defined in the script/env.sh.
+readonly NEW_PROJ_FOLDER="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+
+################################################################################
+## Configures shell options, unset aliases and other initialization.
+##
+## Globals:
+##   None.
+## Arguments:
+##   None.
+## Returns:
+##   0 always.
+################################################################################
+scaffold::init() {
+
+  # ensure no aliases are used during the execution of script
+  \unalias -a
+
+  set -o errexit  # abort on nonzero exitstatus
+  set -o nounset  # abort on unbound variable
+  set -o pipefail # don't hide errors within pipes
+
+  return 0
+}
+
+################################################################################
 ## The main function.
 ##
 ## Globals:
-##   none.
+##   ENV_MAP
+##   NEW_PROJ_FOLDER
 ## Arguments:
 ##   none
 ## Returns:
@@ -45,13 +74,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/env.sh" || exit
 main() {
 
   # Note that ENV_MAP is defined in the "env.sh"
-  mkdir -p "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" || {
-    printf "Failed to create directory %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+  mkdir -p "${NEW_PROJ_FOLDER}" || {
+    printf "Failed to create directory %s\n" "${NEW_PROJ_FOLDERME}" >&2
     return 1
   }
 
-  cd "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" || {
-    printf "Failed to change directory to %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+  pushd "${NEW_PROJ_FOLDER}" || {
+    printf "Failed to change directory to %s\n" "${NEW_PROJ_FOLDER}" >&2
     return 1
   }
 
@@ -64,9 +93,11 @@ main() {
     --no-split-project  \
     --java-version 21 <<< 'no' || {
     printf "Failed to initialize Gradle project %s\n" "${ENV_MAP[PROJECT_NAME]}" >&2
+    popd
     return 1
   }
 
+  popd
 }
 
 ################################################################################
