@@ -5,20 +5,56 @@ the assistance of [Claude Code](https://www.anthropic.com/claude-code).
 
 _The steps were created and tested under the UNIX macOS system._
 
+## Make a plan of what is intended
+
+- AI works best by solving small, discrete, detailed tasks
+- Be specific, have detailed context and information
+- Make sure you know and have a clear vision of what you want to build
+
+## Pre-requisites
+
+Ensure you have the following tools installed:
+
+- Bash 4.2 or later
+- Gradle 9.0.0 or later
+- Java 21
+- gh (GitHub CLI tool) 2.76.2 or later
+
 ## Steps to scaffold a new Gradle project
 
-Refer to the [SCAFFOLD.md](SCAFFOLD.md) file for the steps to scaffold a new
-Gradle project.
+1. Edit the [script/env.sh](script/env.sh) and configure the properties in the
+   ENV_MAP environment variable appropriately.
+2. Once the `env.sh` `ENV_MAP` has been configure correctly, run the following:
+
+  ```bash
+  script/scaffold.sh || {
+    printf "Failed to scaffold project.\n" >&2
+  }
+  ```
 
 ## Steps to set up Gradle build infrastructure
 
-Refer to the [INFRA.md](INFRA.md) file for the steps to set up
-the Gradle build files.
+1. Ensure you have completed the previous "Steps to scaffold a new Gradle
+   project"
+2. Once `scripts/scaffold.sh` was successful, run the following:
+
+  ```bash
+  script/infra.sh || {
+    printf "Failed to infra project.\n" >&2
+  }
+  ```
 
 ## Steps to import the newly created project to a GitHub repository
 
-Refer to the [IMPORT.md](IMPORT.md) file for the steps to import the newly
-created project to a GitHub repository.
+1. Ensure you have completed the previous "Steps to to set up Gradle build
+   infrastructure"
+2. Once `scripts/infra.sh` was successful, run the following:
+
+  ```bash
+  script/import.sh || {
+    printf "Failed to import project.\n" >&2
+  }
+  ```
 
 ## AI prompts to generate a README.md and API.md files
 
@@ -183,7 +219,7 @@ README.md and API.md after the updates.
     git add .
     git commit -m "Gradle dependencies plan executed successfully"
     ```
-  
+
 #### Plan: Generate the codebase
 
 - Go to plan mode by hitting SHIFT + TAB + TAB on macOS.
@@ -223,7 +259,8 @@ README.md and API.md after the updates.
   builds successfully.
 
 - Have Claude Code resolve any issues that may arise during the code generation
-  process. If Claude Code asks you to review the code, do so and provide feedback
+  process. If Claude Code asks you to review the code, do so and provide
+  feedback
   as needed.
 
 - Then, create a new checkpoint prompting:
