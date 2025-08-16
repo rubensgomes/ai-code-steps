@@ -140,8 +140,8 @@ infra::copy_files() {
     return 1
   }
 
-  cp -f template/build.gradle.kts.template "${new_proj_folder}/build.gradle.kts" || {
-    printf "Failed to copy build.gradle.kts.template to ${new_proj_folder}/build.gradle.kts\n" >&2
+  cp -f template/build.gradle.kts.template "${new_proj_folder}/lib/build.gradle.kts" || {
+    printf "Failed to copy build.gradle.kts.template to ${new_proj_folder}/lib/build.gradle.kts\n" >&2
     return 1
   }
 
