@@ -42,12 +42,15 @@ declare -ra MODIFIED_TEMPLATE_FILES=(
   "template/README.md.template"
 )
 
+# ENV_MAP[PROJECT_NAME] is defined in the script/env.sh.
+readonly NEW_PROJ_FOLDER="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+
+
 ################################################################################
 ## Configures shell options, unset aliases and other initialization.
 ##
 ## Globals:
-##   DEFAULT_TZ : default timezone.
-##   TZ         : environment variable used by time/date utilities.
+##   None.
 ## Arguments:
 ##   None.
 ## Returns:
@@ -71,8 +74,8 @@ infra::init() {
 ## values defined in ENV_MAP from env.sh.
 ##
 ## Globals:
-##   ENV_MAP         : associative array defined in env.sh
-##   MODIFIED_TEMPLATE_FILES : array of files to modify
+##   ENV_MAP
+##   MODIFIED_TEMPLATE_FILES
 ## Arguments:
 ##   none
 ## Returns:
@@ -120,28 +123,28 @@ infra::replace_tokens() {
 ## Copies and renames the non-updated template files to the new project.
 ##
 ## Globals:
-##   ENV_MAP : associative array defined in env.sh
-##   HOME    : the user's home directory
+##   NEW_PROJ_FOLDER
 ## Arguments:
 ##   none
 ## Returns:
 ##   0 if okay; something else if fails.
 ################################################################################
 infra::copy_files() {
-  local new_proj_folder="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
 
-  cp -f .gitignore "${new_proj_folder}/.gitignore" || {
-    printf "Failed to copy .gitignore to ${new_proj_folder}/.gitignore\n" >&2
+  cp -f .gitignore "${NEW_PROJ_FOLDER}" || {
+    printf "Failed to copy .gitignore to ${NEW_PROJ_FOLDER}/.gitignore\n" >&2
     return 1
   }
 
-  cp -f .gitattributes "${new_proj_folder}/.gitattributes" || {
-    printf "Failed to copy .gitattributes to ${new_proj_folder}/.gitattributes\n" >&2
+  cp -f .gitattributes "${NEW_PROJ_FOLDER}" || {
+    printf "Failed to copy [%s] to [%s]\n" ".gitattributes" "${NEW_PROJ_FOLDER}" >&2
     return 1
   }
 
-  cp -f template/build.gradle.kts.template "${new_proj_folder}/lib/build.gradle.kts" || {
-    printf "Failed to copy build.gradle.kts.template to ${new_proj_folder}/lib/build.gradle.kts\n" >&2
+  local build_file="template/build.gradle.kts.template"
+  cp -f "${build_file}" "${NEW_PROJ_FOLDER}/lib/build.gradle.kts" || {
+    printf "Failed to copy [%s] to [%s]\n" "${build_file}" \
+      "${NEW_PROJ_FOLDER}/lib/build.gradle.kts\n" >&2
     return 1
   }
 
@@ -152,15 +155,13 @@ infra::copy_files() {
 ## Moves the update templated files to the new project.
 ##
 ## Globals:
-##   ENV_MAP : associative array defined in env.sh
-##   HOME    : the user's home directory
+##   NEW_PROJ_FOLDER
 ## Arguments:
 ##   none
 ## Returns:
 ##   0 if okay; something else if fails.
 ################################################################################
 infra::mv_files() {
-  local new_proj_folder="${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
   local file new_file
 
   printf "changing to template folder.\n"
@@ -168,9 +169,9 @@ infra::mv_files() {
 
   for new_file in *.NEW; do
     file="${new_file/%.template.NEW/}"
-    printf "copying [%s] to [%s].\n" "${new_file}" "${new_proj_folder}/${file}"
-    mv "${new_file}" "${new_proj_folder}/${file}" || {
-      printf "Failed to copy [%s] to [%s]\n" "${new_file}" "${new_proj_folder}/${file}" >&2
+    printf "moving [%s] to [%s].\n" "${new_file}" "${NEW_PROJ_FOLDER}/${file}"
+    mv "${new_file}" "${NEW_PROJ_FOLDER}/${file}" || {
+      printf "Failed to move [%s] to [%s]\n" "${new_file}" "${NEW_PROJ_FOLDER}/${file}" >&2
       popd
       return 1
     }
@@ -185,8 +186,7 @@ infra::mv_files() {
 ## version catalog.
 ##
 ## Globals:
-##   ENV_MAP : associative array defined in env.sh
-##   HOME    : the user's home directory
+##   NEW_PROJ_FOLDER
 ## Arguments:
 ##   none
 ## Returns:
@@ -194,8 +194,8 @@ infra::mv_files() {
 ################################################################################
 infra::rm_toml() {
 
-  cd "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" || {
-    printf "Failed to change directory to %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
+  pushd "${NEW_PROJ_FOLDER}" || {
+    printf "Failed to change directory to %s\n" "${NEW_PROJ_FOLDER}" >&2
     return 1
   }
 
@@ -204,11 +204,13 @@ infra::rm_toml() {
 
     rm -f "gradle/libs.versions.toml" || {
       printf "Failed to remove gradle/libs.versions.toml\n" >&2
+      popd
       return 1
     }
 
   fi
 
+  popd
   return 0
 }
 
@@ -224,21 +226,21 @@ infra::rm_toml() {
 ################################################################################
 main() {
 
+  printf "initialize the environment\n"
+  infra::init || {
+    printf "Failed to initialize the environment.\n" >&2
+    return 1
+  }
+
   local proj_root=
   if ! proj_root="$(git rev-parse --show-toplevel)"; then
-    printf "failed to determinie git project new_proj_folder.\n" >&2
+    printf "failed to determine git project NEW_PROJ_FOLDER.\n" >&2
     return 1
   fi
 
   printf "changing to: %s\n" "${proj_root}"
   cd "${proj_root}" || {
     printf "failed to change to %s\n" "${proj_root}"
-    return 1
-  }
-
-  printf "initialize the environment\n"
-  infra::init || {
-    printf "Failed to initialize the environment.\n" >&2
     return 1
   }
 
