@@ -51,7 +51,7 @@ main() {
    }
 
   # creates a new local Git repository
-  printf "create local Git folder at: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
+  printf "create local Git main branch from folder at: %s\n\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}"
 
   git init -b main || {
       printf "Failed to Git init directory %s\n" "${HOME}/dev/${ENV_MAP[PROJECT_NAME]}" >&2
@@ -99,12 +99,28 @@ main() {
     }
   fi
 
-  printf "pushing local changes to GitHub repository.\n\n"
+  printf "pushing local main branch changes to GitHub repository.\n\n"
   git push -u origin main || {
       printf "Failed to push to remote repository.\n" >&2
       return 1
   }
 
+  local existed_in_remote=$(git ls-remote --heads origin release)
+  printf "checking if remove release branch exists.\n\n"
+
+  if [[ -z "${existed_in_remote}" ]]; then
+    printf "creating a release branch off of main.\n\n"
+    git checkout -b release main || {
+        printf "Failed to create release branch.\n" >&2
+        return 1
+    }
+    printf "pushing local release branch changes to GitHub repository.\n\n"
+    git push -u origin release || {
+        printf "Failed to push to remote repository.\n" >&2
+        return 1
+    }
+
+  fi
 }
 
 ################################################################################
