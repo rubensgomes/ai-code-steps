@@ -59,6 +59,10 @@ repositories {
 
 dependencies {
     // ########## compileOnly ##################################################
+    compileOnly("org.projectlombok:lombok")
+
+    // ########## developmentOnly ##############################################
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // ########## implementation ###############################################
     // spring boot starter dependencies
@@ -67,8 +71,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // TODO Add more Spring Boot starters as needed
 
-    // ########## developmentOnly ##############################################
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    // other third-party libs
+    implementation("org.apache.commons:commons-lang3")
 
     // ########## runtimeOnly ##################################################
     // TODO Add runtime dependencies as needed
@@ -251,6 +255,8 @@ tasks.bootJar {
 // ----------------------------------------------------------------------------
 
 tasks.register("addCopyright") {
+    group = "build"
+    description = "Adds copyright to all Java files in the src directory."
     val copyright =
         """
 /*

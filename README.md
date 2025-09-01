@@ -1,7 +1,7 @@
 # AI Code Steps
 
-This file describes Rubens' steps to set up a new project to be developed with
-the assistance of [Claude Code](https://www.anthropic.com/claude-code).
+This file describes Rubens' steps to set up a new Java 21 Spring Boot project
+to be developed with the assistance of [Claude Code](https://www.anthropic.com/claude-code).
 
 _The steps were created and tested under the UNIX macOS system._
 
