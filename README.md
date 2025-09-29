@@ -1,277 +1,56 @@
-# AI Code Steps
-
-This file describes Rubens' steps to set up a new Java 21 Spring Boot project
-to be developed with the assistance of [Claude Code](https://www.anthropic.com/claude-code).
-
-_The steps were created and tested under the UNIX macOS system._
-
-## Make a plan of what is intended
-
-- AI works best by solving small, discrete, detailed tasks
-- Be specific, have detailed context and information
-- Make sure you know and have a clear vision of what you want to build
-
-## Pre-requisites
-
-Ensure you have the following tools installed:
+# AI Claude Code Steps
 
-- Bash 4.2 or later
-- Gradle 9.0.0 or later
-- Java 21
-- gh (GitHub CLI tool) 2.76.2 or later
+I have been using [Claude Code](https://www.anthropic.com/claude-code) to help me develop software projects. I have found that using **Claude Code** can help me be more productive and efficient. However, I have also found that using **Claude Code** can be challenging if I do not have a clear plan, and an environment and structure setup for my project.  I have therefore created this project to share the steps that I follow.
 
-## Steps to scaffold a new Gradle project
+## Tips
 
-1. Edit the [script/env.sh](script/env.sh) and configure the properties in the
-   ENV_MAP environment variable appropriately.
-2. Once the `env.sh` `ENV_MAP` has been configure correctly, run the following:
+1. The success of your project is highly correlated to the planning you do upfront.  You should plan to have good and concise documentation in the project and in the default ~/.claude directory.
+2. Make use of custom slash commands for repetitive tasks, like creating a compoent implementation plans, and executing them.
+3. It is best not to enter line breaks in the markdown files to wrap text.  I've read somewhere that Claude Code works better with long lines of text.  Only use line breaks to separate paragraphs.
+4. Do not fully trust Claude Code to pick frameworks, and main libraries for your project. It is best to do upfront exploration of libraries, frameworks, and tools to add to the project `design/TECHNOLOGY_STACK.md` file.
+5. Do not fully trust Claude Code to fully design your components. It is best to do a high level description of the main components and place them in the `design/COMPONENTS.md` file.
 
-  ```bash
-  script/scaffold.sh || {
-    printf "Failed to scaffold project.\n" >&2
-  }
-  ```
-
-## Steps to set up Gradle build infrastructure
+## Step 1 - Scaffold Project
 
-1. Ensure you have completed the previous "Steps to scaffold a new Gradle
-   project"
-2. Once `scripts/scaffold.sh` was successful, run the following:
+I start with a well-defined scaffolded project that makes proper use of source code structures, and build/dependency management tools.  I use `poetry` to scaffold Python projects, and `gradle` to scaffold Java/Kotlin projects.
 
-  ```bash
-  script/infra.sh || {
-    printf "Failed to infra project.\n" >&2
-  }
-  ```
+## Step 2 - CLAUDE.md, CLAUDE_JAVA.md and CLAUDE_PYTHON.md
 
-## Steps to import the newly created project to a GitHub repository
+I have created [CLAUDE.md](claude/CLAUDE.md), [CLAUDE_JAVA.md](claude/CLAUDE_JAVA.md), and [CLAUDE_PYTHON.md](claude/CLAUDE_PYTHON.md) files that I store in my ~/.claude directory locally.
 
-1. Ensure you have completed the previous "Steps to to set up Gradle build
-   infrastructure"
-2. Once `scripts/infra.sh` was successful, run the following:
+## Step 3 - Custom Slash Commands
 
-  ```bash
-  script/import.sh || {
-    printf "Failed to import project.\n" >&2
-  }
-  ```
+I have created custom slash commands [here](claude/commands) that I store in my ~/.claude/commands directory locally.
 
-## AI prompts to generate a README.md and API.md files
+## Step 4 - Think About the Project
 
-1. Prompt [Claude](https://claude.ai/) to generate `README.md` and `API.md`
-   files for the new project. For example you may use the following prompt (
-   adapted to your project):
+Now it is the time to think about where you are going with the project. What are you trying to build? What is the problem you are trying to solve? What are the requirements? What are the constraints? What are the assumptions? What are the risks? What are the dependencies? What are the milestones? What are the deliverables? What are the success criteria?
 
-```text
-I need a concise README.md that works well with Claude Code during project
-initialization. The project is a microservice application that provides RESTful
-APIs to register and authenticate users. The project should be called user-ms, 
-and the application Java root package should be com.rubensgomes.userms.
-
-The project tech stack should consist of:
+## Ste 5 - Document Project Description in README.md
 
-- Java 21
-- Spring Boot 3.5.x
-- Gradle 9.0.x
-- MariaDB 11.8.x
-- H2 Database for testing and development
-- Spring Projects APIs and dependencies
-- Sprint Security for authentication and authorization
-- Spring Data JPA for database access
-- Lombok for boilerplate code reduction
-- OpenAPI 3.1 for API documentation
-- Swagger UI for API testing
-- JUnit 5 for unit testing
-- Mockito for mocking dependencies in unit tests
-- JWT token for authentication and authorization
+At this stage, I write a high-level project description, goals, and assumption in the introductory section of the project README.md file.
 
-The user database table should include the following fields:
-- email
-- password
-- timestamps for when the user was created and when the password was changed
+## Step 6 - Create a Project `design/TECH_STACK.md` File
 
-I need a separate API.md API documentation to be used by Claude Code as well.
-The README.md file should have a link to the API.md. The API documentation should
-address APIs to register a user, change the user's password, and authenticate
-the user.  If the user forgets his password, he can can request to change the password by
-having a link being sent to his email. 
+I create a `design/TECHNOLOGY_STACK.md` file in the project.  In this file, I describe the main libraries, frameworks and tools for my project.  This file will be used by Claude Code to help in making a plan to implement each component.
 
-The API.md file should include:
+## Step 7 - Create a Project `design/COMPONENTS.md` File
 
-- Endpoint list and descriptions
-- HTTP methods (GET, POST, PUT, DELETE)
-- URL paths to the Swagger UI and OpenAPI 3.1 JSON and YAML
-- Request/response examples (with curl or JSON)
-- Query/path/body parameters
-- Authentication info (e.g., JWT, OAuth)
-```
+I create a `design/COMPONENTS.md` file in the project.  In this file, I describe the high-level of each component I envision for the.  Notice that by component I mean a class, or a set of related classes that work together to provide a specific functionality in the system.
 
-## Add README.md and API.md files to the project
+This file will be used by Claude Code when making an implementation plan.
 
-Copy and paste the generated `README.md` and `API.md` files to the root of the
-newly created project.
+## Step 8 - Component Implementation Plan and Execution
 
-## Update the README.md and API.md files
+At this stage, I use the custom slash command `component-plan` along with the name of the component found in the `design/COMPONENTS.md` file. Then, I review and make any change suggestions to the implementation plan that Claude Code created.  After I accept the plan, I ensure the plan is stored in teh projects `tasks` folder, and I approve the execution of the plan.
 
-Now that you have the `README.md` and `API.md` files, you can update them
-with any additional information you want to add, remove or change, such as:
+I do this stage for each component found in the `design/COMPONENTS.md` file. I then validate the tests are passing, and make any suggestions of new tests/changes if necessary.
 
-### Api.md
+### Step 9 - Git Commit
 
-- Update the API endpoints to match your project requirements.
-- Add any additional endpoints that you may need.
-- Update the request/response examples to match your project requirements.
-- Add any additional information that you may need, such as error codes,
-  authentication methods, and query parameters.
-- Change the API paths, if needed.
+Once I feel satisfied with the implementation of the component, I do a git commit with a message that describes what was done.
 
-### README.md
+### Step 10 - Iterate
 
-- Look for any section that needs more details, such as the project description,
-  tech stack, and license.
-- Add any additional information that you may need, such as the project
-  structure, database schema, and quick start instructions.
+I now iterate over Steps 7, 8, 9 and 10 until I feel the project is complete.
 
-### Example of final README.md and API.md files
-
-Refer to the [user-ms](https://github.com/rubensgomes/user-ms) for an example of
-README.md and API.md after the updates.
-
-## Let's start using Claude Code!
-
-### Initialize the project with Claude Code
-
-1. Initialize the project with Claude Code:
-    - Open the newly created project in IntelliJ IDEA.
-    - Open the terminal and type `claude` to start the Claude Code
-    - At the Claude code promp, type `/init` and accept the default responses.
-
-2. Add the following in the CLAUDE.md after the `# CLAUDE.md` header:
-
-    ```markdown
-    ## Claude rules
-
-   1. First think through the problem, read the codebase for relevant files, and
-      write a plan to tasks/todo.md.
-   2. The plan should have a list of todo items that you can check off as you
-      complete them
-   3. Before you begin working, check in with me and I will verify the plan.
-   4. Then, begin working on the todo items, marking them as complete as you go.
-   5. Please every step of the way just give me a high level explanation of what
-      changes you made
-   6. Make every task and code change you do as simple as possible. We want to
-      avoid making any massive or complex changes. Every change should impact as
-      little code as possible. Everything is about simplicity.
-   7. Finally, add a review section to the [todo.md](http://todo.md/) file with a
-      summary of the changes you made and any other relevant information.
-    ```
-
-3. Create a Claude checkpoint by typing at the Claude Code prompt:
-
-    ```shell
-    claude checkpoint "Initial project setup complete"   
-    ```
-
-### Create and execute plans with Claude Code
-
-#### Plan: Infrastructure plan to set up Gradle build files
-
-- Go to plan mode by hitting SHIFT + TAB + TAB on macOS.
-
-- Type the following prompt to create a plan:
-
-    ```text
-    I need to check and update the Gradle build file to make sure it has all 
-    the dependencies and plugins that are needed to support the project codebase.  
-    ```
-
-- Once the plan is created, review it and make sure it is correct. Then,type the
-  following prompt to save a plan:
-
-    ```text
-    I need to save this plan for later execution.
-    ```
-
-- Once the plan is saved, get out of plan mode hitting SHIFT + TAB to go back to
-  the code mode. Then, create a new checkpoint prompting:
-
-    ```text
-    claude checkpoint "Prior to execute gradle-dependencies-plan.md"
-    ```
-
-- Now you can execute the plan by typing:
-
-    ```text
-    claude execute "tasks/gradle-dependencies-plan.md"
-    ```
-- Run some gradle tasks like `gradle clean build` to make sure the project
-  builds successfully.
-
-- Then, create a new checkpoint prompting:
-
-    ```text
-    claude checkpoint "Gradle dependencies plan executed successfully"
-    ```
-
-- Finally, run a git commit to save the changes made by Claude Code:
-
-    ```text
-    git add .
-    git commit -m "Gradle dependencies plan executed successfully"
-    ```
-
-#### Plan: Generate the codebase
-
-- Go to plan mode by hitting SHIFT + TAB + TAB on macOS.
-
-- Type the following prompt to create a plan:
-
-    ```text
-    I need to generate all the source code for the project and the 
-    corresponding test code as well. The code should be generated based on the
-    README.md and API.md files that was generated earlier. The code should be 
-    generated in a way that is easy to understand and maintain. The code should
-    be generated along with documentation for all the classes, public methods,
-    class instance variables, and any documentation necessary.
-    ```
-
-- Once the plan is created, review it and make sure it is correct. Then,type the
-  following prompt to save the plan:
-
-    ```text
-    I need to save this plan for later execution.
-    ```
-
-- Once the plan is saved, get out of plan mode hitting SHIFT + TAB to go back to
-  the code mode. Then, create a new checkpoint prompting:
-
-    ```text
-    claude checkpoint "Prior to execute source-code-generation-plan.md"
-    ```
-
-- Now you can execute the plan by typing:
-
-    ```text
-    claude execute "tasks/source-code-generation-plan.md"
-    ```
-
-- Run some gradle tasks like `gradle clean build` to make sure the project
-  builds successfully.
-
-- Have Claude Code resolve any issues that may arise during the code generation
-  process. If Claude Code asks you to review the code, do so and provide
-  feedback
-  as needed.
-
-- Then, create a new checkpoint prompting:
-
-    ```text
-    claude checkpoint "Gradle source code plan executed successfully"
-    ```
-
-- Finally, run a git commit to save the changes made by Claude Code:
-
-    ```text
-    git add .
-    git commit -m "Gradle source code plan executed successfully"
-    ```
