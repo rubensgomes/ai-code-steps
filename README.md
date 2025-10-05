@@ -20,7 +20,7 @@ I have created [CLAUDE.md](claude/CLAUDE.md), [CLAUDE_JAVA.md](claude/CLAUDE_JAV
 
 ## Step 3 - Custom Slash Commands
 
-I have created custom slash commands [here](claude/personal-commands) that I store in my ~/.claude/commands directory locally.
+I have created custom slash commands [here](claude/commands) that I store in my ~/.claude/commands directory locally.
 
 ## Step 4 - Think About the Project
 

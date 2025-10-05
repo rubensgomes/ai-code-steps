@@ -3,6 +3,3 @@
 .github/copilot-instructions.md
 CLAUDE.md
 README.md
-design/ARCHITECTURE.md
-design/COMPONENTS.md
-design/TECH_STACK.md
