@@ -1,6 +1,7 @@
 ## Workflow Rules
 
-1. MUST plan first → Get approval → Store plan in project tasks folder
+1. MUST plan first → Get approval → Store plan in the project tasks folder: 
+   `misc/tasks`
 2. Use checkboxes in task plan files:
    - - [ ] Add new DTO
    - - [ ] Update service layer
@@ -35,13 +36,10 @@
   requested
 - Do what's asked; nothing more, nothing less
 
-IF the project is Python-based
-THEN read and follow the `~/.claude/CLAUDE_PYTHON.md` file for Python-specific 
-guidelines.
-ELSE IF the project is Java-based
-THEN read and follow the `~/.claude/CLAUDE_JAVA.md` file for Java-specific 
-guidelines.
+## Load Additional Files
 
-IF the file `.github/copilot-instructions.md` is present in the project
-THEN read and load the instructions from it.
+IF the project is Python-based
+THEN load `~/.claude/CLAUDE_PYTHON.md` file for Python-specific guidelines.
+ELSE IF the project is Java-based
+THEN load `~/.claude/CLAUDE_JAVA.md` file for Java-specific guidelines.
 
