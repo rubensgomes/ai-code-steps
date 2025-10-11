@@ -1,4 +1,9 @@
-# Show Understanding Command
+---
+description: Generates LLM understanding of given file.
+argument-hint: Project filename
+---
+
+# Generate Understanding Command
 
 1. If no argument is provided, respond with "Error: No context file provided."
 2. IF the $ARGUMENT is not found locally or in the project, respond with 

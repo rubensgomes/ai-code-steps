@@ -1,3 +1,0 @@
-# USER_FILES.txt
-
-~/.claude/CLAUDE.md
