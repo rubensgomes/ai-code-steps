@@ -8,6 +8,17 @@ structure setup for my project.
 
 I have created this project to share the steps that I follow.
 
+## Some of the reasons I like `Claude Code`
+
+- Provide the "plan mode" which allows me to more easily have plans created,
+  reviewed, and saved prior to execution.
+- Provides support for running commands in the background.
+- Provides support for "custom slash commands" which allows me to create routine
+  repetive commands in prompt files.
+- It is easy to switch in and and out of plan mode, background mode, and edits
+  mode.
+ 
+
 ## Tips
 
 1. The success of your project is highly correlated to the planning you do
@@ -33,26 +44,25 @@ I have created this project to share the steps that I follow.
     - You are an expert software developer...
 
 
-
-## Step 1 - Scaffold Project
+## Step 1: Scaffold Project
 
 I start with a well-defined scaffolded project that makes proper use of source
 code structures, and build/dependency management tools. I use `poetry` to
 scaffold Python projects, and `gradle` to scaffold Java/Kotlin projects.
 
-## Step 2 - CLAUDE.md, CLAUDE_JAVA.md and CLAUDE_PYTHON.md
+## Step 2: CLAUDE.md, CLAUDE_JAVA.md and CLAUDE_PYTHON.md
 
 I have
 created [CLAUDE.md](claude/CLAUDE.md), [CLAUDE_JAVA.md](claude/CLAUDE_JAVA.md),
 and [CLAUDE_PYTHON.md](claude/CLAUDE_PYTHON.md) files that I store in my ~
 /.claude directory locally.
 
-## Step 3 - Custom Slash Commands
+## Step 3: Custom Slash Commands
 
 I have created custom slash commands [here](claude/commands) that I store in
 my ~/.claude/commands directory locally.
 
-## Step 4 - Think About the Project
+## Step 4: Think About the Project
 
 Now it is the time to think about where you are going with the project. What are
 you trying to build? What is the problem you are trying to solve? What are the
@@ -60,18 +70,18 @@ requirements? What are the constraints? What are the assumptions? What are the
 risks? What are the dependencies? What are the milestones? What are the
 deliverables? What are the success criteria?
 
-## Ste 5 - Document Project Description in README.md
+## Ste 5: Document Project Description in README.md
 
 At this stage, I write a high-level project description, goals, and assumption
 in the introductory section of the project README.md file.
 
-## Step 6 - Create a Project `design/TECH_STACK.md` File
+## Step 6: Create a Project `design/TECH_STACK.md` File
 
 I create a `design/TECHNOLOGY_STACK.md` file in the project. In this file, I
-describe the main libraries, frameworks and tools for my project. This file will
+describe the main libraries, frameworks, and tools for my project. This file will
 be used by Claude Code to help in making a plan to implement each component.
 
-## Step 7 - Create a Project `design/COMPONENTS.md` File
+## Step 7: Create a Project `design/COMPONENTS.md` File
 
 I create a `design/COMPONENTS.md` file in the project. In this file, I describe
 the high-level of each component I envision for the. Notice that by component I
@@ -80,7 +90,7 @@ specific functionality in the system.
 
 This file will be used by Claude Code when making an implementation plan.
 
-## Step 8 - Component Implementation Plan and Execution
+## Step 8: Component Implementation Plan and Execution
 
 At this stage, I use the custom slash command `component-plan` along with the
 name of the component found in the `design/COMPONENTS.md` file. Then, I review
@@ -92,12 +102,15 @@ I do this stage for each component found in the `design/COMPONENTS.md` file. I
 then validate the tests are passing, and make any suggestions of new
 tests/changes if necessary.
 
-### Step 9 - Git Commit
+### Step 9: Git Commit
 
 Once I feel satisfied with the implementation of the component, I do a git
 commit with a message that describes what was done.
 
-### Step 10 - Iterate
+### Step 10: Iterate
 
-I now iterate over Steps 7, 8, 9 and 10 until I feel the project is complete.
+I now iterate over Steps 7, 8, 9, and 10 until I feel the project is complete.
+
+---
+Author:  [Rubens Gomes](https://rubensgomes.com/)
 

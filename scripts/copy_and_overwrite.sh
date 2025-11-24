@@ -47,8 +47,7 @@ fi
 info "Copying from '$SRC' to '$DEST' (overwriting existing files)..."
 
 # The -r flag copies directories recursively
-# The -u flag overwrites only if source is newer
 # The -f flag forces overwriting without confirmation
-cp -ruf "$SRC"/* "$DEST"/
+cp -vrf "$SRC"/* "$DEST"/
 
 info "✅ Copy completed successfully."
