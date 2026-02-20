@@ -17,7 +17,6 @@
 #   1 - One or more tests failed or missing dependencies
 #
 # Author: Generated with Claude Code
-# License: Apache-2.0
 ################################################################################
 
 set -e

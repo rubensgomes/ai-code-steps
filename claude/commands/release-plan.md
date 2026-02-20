@@ -13,5 +13,10 @@ argument-hint: Git repository name (e.g., rubensgomes/javamcp)
    You do not have access to the $ARGUMENT repository."
 6. If the repository does not exist, respond with "Error: The repository 
    $ARGUMENT does not exist."
-7. Upon approval of the release plan, you must save the plan, and mark off
-checkboxes as those steps in the plan are completed.
+7. Upon approval of the release plan:
+  - MUST ensure a CHANGELOG.md file exists in the project
+  - MUST update the CHANGELOG.md with the current release changes
+  - MUST save the release plan in the project's docs folder
+  - MUST mark off checkboxes as steps in the plan are completed
+  - MUST get user's approval for each release step being executed
+
